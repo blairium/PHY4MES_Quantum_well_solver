@@ -41,25 +41,22 @@ mkdir(folder)
 
 %Loop through temp
 hold on
-for  i = 1:4
-    Nin = 66*i;
+for  Nin = 66:10:660
     fprintf('Inner Thickness of  %d mesh points.\n',Nin)
-    hold on
-    subplot(2,2,i);
     [~, NX_SUM1,NX_SUM2, NX_SUM3, NX_SUM4,prob1, prob2, prob3, prob4, ~, ~, XX, ~] = QW2(a, mu, Temp,Nout, Nin, Nw1, Nw2, E_m, E_out, num_eig, saveloc, ED_eig_plots, 1);
     scatter(XX,prob1,'filled', 'blue');
     scatter(XX,prob2,'filled', 'red');
     scatter(XX,prob3,'filled', 'green');
-    scatter(XX,prob4,'filled', 'yellow');
-    sgtitle('Probability Density vs Inner Barrier Thickness ','interpreter','latex')
+    scatter(Nin*0.03,prob4,'filled', 'yellow');
+    title('Probability Density vs Inner Barrier Thickness ','interpreter','latex')
     xlabel('Inner Barrier Thickness($nm$)','interpreter','latex')
     ylabel('Probability Density','interpreter','latex')
     legend('First Eigenstate','Second Eigenstate', 'Third Eigenstate', 'Fourth Eigenstate','location','best')
-    hold off
+
     
     
 end
-saveas(gcf,strcat(folder,'prob_density_vs_inner_barrier_vs_loc.png'))
+saveas(gcf,strcat(folder,'prob_density_vs_inner_barrier.png'))
 hold off
 % figure(1)
 % hold on
