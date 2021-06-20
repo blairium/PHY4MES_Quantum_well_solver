@@ -10,24 +10,116 @@ a = 3e-11 ;%
 mu = 1 ;% Fermi level in eV
 Temp = 298; % Kelvin
 Nout = 100; %mesh points
-Nw = 100; %mesh points
+Nw = 412; %mesh points
 E_out = 4 ;%eV;
-num_eig = 5 ;% Number of eigen states to display
-saveloc = 'C:\Users\blair\Documents\University\2021\PHY4MES\Computational Lab 2 (2021)-20210504\figures\Q2'; %Save location
+num_eig = 1 ;% Number of eigen states to display
+saveloc = 'C:\Users\blair\Documents\University\2021\PHY4MES\Computational Lab 2 (2021)-20210504\figures'; %Save location
 ED_eig_plots = 3; % Number of subplots of electron density, for some the density will be so low there's not much point plotting
+folder = strcat(saveloc,'\Q2\');
+mkdir(folder)
 
-%Loop through temp
-for  Temp = [298, 373, 500]
-    fprintf('Temperature of  %d K.\n',Temp)
-    QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
-    close all %Closes plot windows 
+
+hold on
+for    Temp = 100:10:1000
+    fprintf('Temp  %d K.\n',Temp)
+    [~,~,NX_SUM1,NX_SUM2, NX_SUM3, NX_SUM4, ~, ~, ~, ~] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots, plot);
+    scatter(Temp,NX_SUM1,'filled', 'blue');
+    scatter(Temp,NX_SUM2,'filled', 'red');
+    scatter(Temp,NX_SUM3,'filled', 'green');
+    scatter(Temp,NX_SUM4,'filled', 'yellow');
+    title('Sum Electron Density vs Barrier Thickness ','interpreter','latex')
+    xlabel('Inner Barrier Thickness($nm$)','interpreter','latex')
+    ylabel('Electron Density','interpreter','latex')
+    legend('First Eigenstate','Second Eigenstate', 'Third Eigenstate', 'Fourth Eigenstate','location','best')
+
+    
+    
 end
-%Loop through well width
-for Nout = [10, 50, 100, 200, 500] % Well dith of 1000 won't converge
-    fprintf('Barrier Thickness of  %d nm.\n',Nout*.03)
-    QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
-    close all
-end
+saveas(gcf,strcat(folder,'nx_sum_vs_inner_barrier.png'))
+hold off
+% figure(1)
+% hold on
+% for  Temp = 100:10:1000 %Temperatures less that 100ish cause problems, return inf during convergence loop
+% 
+%     [W,prob,nx_sum, U1, Ec, XX, EDxx] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
+%     yyaxis left
+%     scatter(Temp,nx_sum,'filled','blue');
+%     title({'Sum Electron Density and Energy Eigenvalues';'vs Temperature '},'interpreter','latex')
+%     xlabel(' Temperature ($^\circ$K)','interpreter','latex')
+%     ylabel('Electron Density','interpreter','latex')
+%     
+%     yyaxis right
+%     scatter(Temp,EDxx,'filled', 'red');
+%     ylabel('Electron Energy Eigenvalue eV','interpreter','latex')
+%     saveas(gcf,strcat(folder,'nx_sum_vs_temp.png'))
+%     
+% end
+% hold off
+
+% figure(2)
+% hold on
+% for  mu = 0:0.01:2
+% 
+%     [W,prob,nx_sum, U1, Ec, XX, EDxx] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
+%     yyaxis left
+%     scatter(mu,nx_sum,'filled','blue');
+%     title({'Sum Electron Density and Energy Eigenvalues';'vs Fermi level '},'interpreter','latex')
+%     xlabel(' Fermi Level ($eV$)','interpreter','latex')
+%     ylabel('Electron Density','interpreter','latex')
+%     
+%     yyaxis right
+%     scatter(mu,EDxx,'filled', 'red');
+%     ylabel('Electron Energy Eigenvalue eV','interpreter','latex')
+%     saveas(gcf,strcat(folder,'nx_sum_vs_fermi.png'))
+%     
+% end
+% hold off
+% 
+% 
+% figure(3)
+% hold on
+% for  Nw = 10:1:300
+% 
+%     [W,prob,nx_sum, U1, Ec, XX, EDxx] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
+%     yyaxis left
+%     scatter(Nw*0.03,nx_sum,'filled','blue');
+%     title({'Sum Electron Density and Energy Eigenvalues';'vs well width'},'interpreter','latex')
+%     xlabel('Well width ($nm$)','interpreter','latex')
+%     ylabel('Electron Density','interpreter','latex')
+%     
+%     yyaxis right
+%     scatter(Nw*0.03,EDxx,'filled', 'red');
+%     ylabel('Electron Energy Eigenvalue eV','interpreter','latex')
+%     saveas(gcf,strcat(folder,'nx_sum_vs_well.png'))
+%     
+% end
+% hold off
+
+%figure(4)
+% hold on
+% for  Nout = 50:5:300
+% 
+%     [W,prob,nx_sum, U1, Ec, XX, EDxx] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
+%     yyaxis left
+%     scatter(Nw*0.03,nx_sum,'filled','blue');
+%     title({'Sum Electron Density and Energy Eigenvalues';'vs barrier thickness'},'interpreter','latex')
+%     xlabel('Well width ($nm$)','interpreter','latex')
+%     ylabel('Electron Density','interpreter','latex')
+%     
+%     yyaxis right
+%     scatter(Nw*0.03,EDxx,'filled', 'red');
+%     ylabel('Electron Energy Eigenvalue eV','interpreter','latex')
+%     saveas(gcf,strcat(folder,'nx_sum_vs_thick_barrier.png'))
+%     
+% end
+% hold off
+
+% %Loop through well width
+% for Nout = [10, 50, 100, 200, 500] % Well dith of 1000 won't converge
+%     fprintf('Barrier Thickness of  %d nm.\n',Nout*.03)
+%     QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
+%     close all
+% end
 % %Loop through barrier height
 % for E_out = [1,2,3,4,5,8,10]
 %     fprintf('Barrier height of  %d eV.\n',E_out)
@@ -41,19 +133,17 @@ end
 %     close all
 % end
 % %loop through barrier thickness
-% for Nw = [10, 50, 100, 200, 500]
-%     fprintf('Barrier Thickness of  %d nm.\n',Nw*.03)
-%     disp('loop through barrier thickness')
-%     QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
-%     close all
-% end
-    
-    
-    
+
+
+
+
+
     
 
-%[W,prob, E,nx_sum, U1, Ec, XX] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots);
-function [W,prob, E,nx_sum, U1, Ec, XX] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots)
+
+
+%[W,prob, E,nx_sum, U1, Ec, XX, EDX] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots, n);
+function [W,prob,NX_SUM1,NX_SUM2, NX_SUM3, NX_SUM4, U1, Ec, XX, EDxx] = QW1(a, mu, Temp, Nout, Nw, E_out, num_eig, saveloc, ED_eig_plots, plot)
 
 
 %%%%%%%%%%%%%%Inputs%%%%%%%%%%%%%%%%%%%%%
@@ -124,13 +214,15 @@ nn=1e-6*n./a;
     function w_n = w_n(x)
         w_n = P(:,x);
     end
+	W = w_n(num_eig);
     function prob = w2(x)
         prob = w_n(x).^2;
     end
-
+    prob = w2(num_eig);
     function EDx = ED(x) %Electron Density
         EDx = D(x);
     end
+    EDxx = ED(num_eig);
     function Occ_x = OC(x)
         Occ_x=log(1+exp((mu-D(x))./kT));
     end
@@ -138,7 +230,7 @@ nn=1e-6*n./a;
     function Ed_x = EDx(x)
         Ed_x=P(:,x).^2 *OC(x) ;%*P(:,x)';
     end
-        
+    EDX = EDx(num_eig);
     function N_x = NX(x)
         N_x=2*n0*EDx(x);
     end
@@ -147,101 +239,107 @@ nn=1e-6*n./a;
         nx_sum=1e-4*sum(sum(NX(x).*[ones(Np,1)]));
     end
         
+    NX_SUM1 = NXSUM(1);
+    NX_SUM2 = NXSUM(2);
+    NX_SUM3 = NXSUM(3);
+    NX_SUM4 = NXSUM(4);
    
 
 
 % shift xx so that interface falls at origin for all dopant conc
     XX = XX-min(XX);
     XX = XX-max(XX)/2;
+   
  
-    folder = strcat(saveloc,'\','Barrier_Height_',num2str(E_out),'\_eV_Well_width_', num2str(Nw) ,'\nm_Temp_' , num2str(Temp),'K\fermi_level', num2str(mu),'\barrier_thicknesss_',num2str(Nout),'\');
-    mkdir(folder)
-    figure(1)
-    
-    hold on
-    for x = 1:num_eig
-        label = strcat('Eigenstate number ', num2str(x)); %Labels each state
-        plot(XX,w_n(x),'DisplayName',label,'LineWidth',2)
-    end
+%     folder = strcat(saveloc,'\','Barrier_Height_',num2str(E_out),'\_eV_Well_width_', num2str(Nw) ,'\nm_Temp_' , num2str(Temp),'K\fermi_level', num2str(mu),'\barrier_thicknesss_',num2str(Nout),'\');
+%     mkdir(folder)
+%     figure(1)
+% 
+%     hold on
+%     for x = 1:num_eig
+%         label = strcat('Eigenstate number ', num2str(x)); %Labels each state
+%         plot(XX,w_n(x),'DisplayName',label,'LineWidth',2)
+%     end
+% 
+%     title('Barrier Height','interpreter','latex')
+%     xlabel(' Position($n m$)','interpreter','latex')
+%     ylabel('Energy eV','interpreter','latex')
+% 
+% 
+%     legend('Location','southeast')
+%     saveas(gcf,strcat(folder,'Wavefunctions.png'))
+% 
+%     hold off
+% 
+% 
+%     figure(2)
+%     hold on
+%     for x = 1:num_eig
+%         label = strcat('Eigenstate number ', num2str(x));
+%         plot(XX,w2(x),'DisplayName',label,'LineWidth',2)
+%     end
+% 
+%     title('Probability Density','interpreter','latex')
+%     xlabel(' Position($n m$)','interpreter','latex')
+%     ylabel('Energy eV','interpreter','latex')
+% 
+% 
+%     legend('Location','southeast')
+%     saveas(gcf,strcat(folder,'prob_density.png'))
+% 
+%     hold off
+% 
+% 
+%     figure(3)
+%     hold on
+%     for x = 1:ED_eig_plots
+%         subplot(ED_eig_plots,1,x)
+%         plot(XX,EDx(x),'DisplayName',label,'LineWidth',2)
+%         title(strcat('Electron Density for eigenvalue ',' ',num2str(x)),'interpreter','latex');
+%         xlabel(' Position($n m$)','interpreter','latex')
+%         ylabel('Energy eV','interpreter','latex')
+% 
+%     end
+% 
+% 
+% 
+%     %legend('Location','southeast')
+%     saveas(gcf,strcat(folder,'elec_density.png'))
+% 
+%     hold off
+% 
+%     figure(4)
+%     hold on
+% 
+%     plot(XX,U1,'LineWidth',2)
+% 
+%     title('Potential vs location','interpreter','latex')
+%     xlabel('Position($n m$)','interpreter','latex')
+%     ylabel('Energy eV','interpreter','latex')
+% 
+% 
+%     legend('Location','southeast')
+%     saveas(gcf,strcat(folder,'potential.png'))
+% 
+%     hold off  
+% 
+% 
+%     figure(5)
+%     hold on
+% 
+%     plot(XX,Ec,'DisplayName','Initial Potential Profile','LineWidth',2)
+%     plot(XX,U,'DisplayName','Final Potential Profile','LineWidth',2)
+% 
+%     title('Sum Electron Density ','interpreter','latex')
+%     xlabel(' Position($n m$)','interpreter','latex')
+%     ylabel('Energy eV','interpreter','latex')
+% 
+% 
+%     legend('Location','southeast')
+%     saveas(gcf,strcat(folder,'profile.png'))
+% 
+%     hold off
 
-    title('Barrier Height','interpreter','latex')
-    xlabel(' Position($n m$)','interpreter','latex')
-    ylabel('Energy eV','interpreter','latex')
-
-
-    legend('Location','southeast')
-    saveas(gcf,strcat(folder,'Wavefunctions.png'))
-
-    hold off
-    
-
-    figure(2)
-    hold on
-    for x = 1:num_eig
-        label = strcat('Eigenstate number ', num2str(x));
-        plot(XX,w2(x),'DisplayName',label,'LineWidth',2)
-    end
-
-    title('Probability Density','interpreter','latex')
-    xlabel(' Position($n m$)','interpreter','latex')
-    ylabel('Energy eV','interpreter','latex')
-
-
-    legend('Location','southeast')
-    saveas(gcf,strcat(folder,'prob_density.png'))
-
-    hold off
-    
-
-    figure(3)
-    hold on
-    for x = 1:ED_eig_plots
-        subplot(ED_eig_plots,1,x)
-        plot(XX,EDx(x),'DisplayName',label,'LineWidth',2)
-        title(strcat('Electron Density for eigenvalue ',' ',num2str(x)),'interpreter','latex');
-        xlabel(' Position($n m$)','interpreter','latex')
-        ylabel('Energy eV','interpreter','latex')
-
-    end
-
-
-
-    %legend('Location','southeast')
-    saveas(gcf,strcat(folder,'elec_density.png'))
-
-    hold off
-
-    figure(4)
-    hold on
-
-    plot(XX,U1,'LineWidth',2)
-
-    title('Potential vs location','interpreter','latex')
-    xlabel('Position($n m$)','interpreter','latex')
-    ylabel('Energy eV','interpreter','latex')
-
-
-    legend('Location','southeast')
-    saveas(gcf,strcat(folder,'potential.png'))
-
-    hold off  
-
-
-    figure(5)
-    hold on
-
-    plot(XX,Ec,'DisplayName','Initial Potential Profile','LineWidth',2)
-    plot(XX,U,'DisplayName','Final Potential Profile','LineWidth',2)
-
-    title('Sum Electron Density ','interpreter','latex')
-    xlabel(' Position($n m$)','interpreter','latex')
-    ylabel('Energy eV','interpreter','latex')
-
-
-    legend('Location','southeast')
-    saveas(gcf,strcat(folder,'profile.png'))
-
-    hold off
 
 end
     

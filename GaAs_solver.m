@@ -60,7 +60,7 @@ nn=1e-6*n./a;
 
 for x=1:1:20
         Occ_x=log(1+exp((mu-D(x))./kT));
-        Ed_x=P(:,x)*Occ_x.*P(:,x);
+        Ed_x=P(:,x).^2 * nOcc_x;
         N_x=2*n0*Ed_x;
         density(x)=1e-4*sum(sum(N_x.*[ones(Np,1)])); 
     end
